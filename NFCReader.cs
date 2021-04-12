@@ -72,6 +72,11 @@ public class NFCReader
                 return new CardData { readerName = readerName, cardResult = "Error" };
 
             SCardDisconnect();
+            
+            // Remove data buffer scraps
+            int tmp = CardResult.IndexOf('/0');
+            CardResult = CardResult.Substring(0, tmp);
+            
             return new CardData { readerName = readerName, cardResult = CardResult };
         }
         SCardDisconnect();
@@ -248,7 +253,7 @@ public class NFCReader
     private bool AuthProcess(int block)
     {
         // authBuffer -> APDU {Class, INS, P1, P2, Lc, CommandData, Le1, Le2, Le3}
-        byte[] authBuffer = new byte[] { 0xff, 0x86, 0x00, 0x00, 0x05, 0x00, 0x00, (byte)block, 0x60, 0x00 }; // 인증 APDU
+        byte[] authBuffer = new byte[] { 0xff, 0x86, 0x00, 0x00, 0x05, 0x00, 0x00, (byte)block, 0x60, 0x00 }; // Certification  APDU
         sendLen = 0x05;
         recvLen = 0x10;
         int ret = 0;
@@ -289,7 +294,7 @@ public class NFCReader
 
         uint ret = NFCApi.SCardTransmit(hCard, pci, sendBuffer, sendLen, ioRecv, recvBuffer, ref recvLen);
         if (ret != NFCcard.SCARD_S_SUCCESS)
-            throw new ApplicationException("NFC 카드와 송신에 실패하였습니다. code = " + ret);
+            throw new ApplicationException("Failed to send NFC card. code = " + ret);
 
         try
         {
@@ -298,16 +303,16 @@ public class NFCReader
                 case transType.auth: // Authenticate
                     for (int i = (recvLen - 2); i <= (recvLen - 1); i++)
                         tmpStr = tmpStr + string.Format("{0:X2}", recvBuffer[i]);
-                    if (tmpStr.Trim() != "9000") // 반환 바이트를 사용할 수 없을때
+                    if (tmpStr.Trim() != "9000") // When return bytes are not available
                         return -202;
                     break;
 
                 case transType.cardID: // If the card is UID
-                    CardResult = BitConverter.ToString(recvBuffer, 0, recvLen - 2); // 수신 데이터
+                    CardResult = BitConverter.ToString(recvBuffer, 0, recvLen - 2); // Incoming Data
                     break;
 
                 case transType.cardRead: // Read card data
-                    CardResult = Encoding.Default.GetString(recvBuffer, 0, recvLen); // 수신 데이터
+                    CardResult = Encoding.Default.GetString(recvBuffer, 0, recvLen); // Incoming Data
                     break;
 
                 case transType.cardWrite: // Writing card data
