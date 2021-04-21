@@ -74,7 +74,7 @@ public class NFCReader
             SCardDisconnect();
             
             // Remove data buffer scraps
-            int tmp = CardResult.IndexOf('/0');
+            int tmp = CardResult.IndexOf('\0');
             CardResult = CardResult.Substring(0, tmp);
             
             return new CardData { readerName = readerName, cardResult = CardResult };
