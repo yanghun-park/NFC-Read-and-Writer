@@ -2,8 +2,8 @@
 using SmardCard;
 using System.Text;
 
-// NFC Project (2021-04-09)
-// Version : 1.00v
+// NFC Project (2021-04-26)
+// Version : 1.10v
 
 public class NFCReader
 {
@@ -37,27 +37,30 @@ public class NFCReader
         public string cardResult = "";
     }
 
-    public CardData readCardData(int block)
+    public CardData readCardData(int block, int type)
     {
         // sendBuffer -> APDU {Class, INS, P1, P2, Le}
         byte[] sendBuffer = new byte[] {0xff, 0xb0, 0x00, (byte)block, 0x10}; // Data Acquisition APDU
         bool authCheck = false;
         int ret;
 
-        try // Attempt to authenticate
+        if (type == 0) // if Mifare S50 is selected
         {
-            SCardEstablishContext();
-            SCardListReaders();
-            SCardConnect();
-            SCardStatus();
-            authCheck = AuthProcess(block);
-        }
-        catch (Exception e)
-        {
-            if (ThrowExceptionLog)
-                //Debug.LogWarning(e);
+            try // Attempt to authenticate
+            {
+                SCardEstablishContext();
+                SCardListReaders();
+                SCardConnect();
+                SCardStatus();
+                authCheck = AuthProcess(block);
+            }
+            catch (Exception e)
+            {
+                if (ThrowExceptionLog)
+                    //Debug.LogWarning(e);
 
-            return new CardData();
+                    return new CardData();
+            }
         }
 
         if (authCheck) // If the certification is successful
@@ -83,7 +86,7 @@ public class NFCReader
         return new CardData { readerName = readerName, cardResult = "Error" };
     }
 
-    public bool writeCardData(int block, string value)
+    public bool writeCardData(int block, string value, int type)
     {
         // sendBuffer -> APDU {Class, INS, P1, P2, Le}
         byte[] sendBuffer = new byte[256];
@@ -97,21 +100,24 @@ public class NFCReader
         bool authCheck = false;
         int ret;
 
-        try // Attempt to authenticate
+        if (type == 0) // if Mifare S50 is selected
         {
-            SCardEstablishContext();
-            SCardListReaders();
-            SCardConnect();
-            SCardStatus();
-            authCheck = AuthProcess(block);
-        }
-        catch (Exception e)
-        {
-            if (ThrowExceptionLog)
-                
-                //Debug.LogWarning(e);
+            try // Attempt to authenticate
+            {
+                SCardEstablishContext();
+                SCardListReaders();
+                SCardConnect();
+                SCardStatus();
+                authCheck = AuthProcess(block);
+            }
+            catch (Exception e)
+            {
+                if (ThrowExceptionLog)
 
-            return false;
+                    //Debug.LogWarning(e);
+
+                    return false;
+            }
         }
 
         if (authCheck) // If the certification is successful
