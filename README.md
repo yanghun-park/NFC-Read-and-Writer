@@ -14,6 +14,10 @@ NFC Communication Programs Implemented in C# (Unity Available)
 
 
 ## How to use
+> ## Note!
+>    The "Type" is as follows. <br/>
+>> 0 : Mifare S50 (ISO/IEC 14443A)<br/>
+>> 1 : Mifare Ultralight (ISO/IEC 14443A)<br/>
 > ## First, create an object as shown below. <br/>
 >    NFCReader NFC = NFC Reader(Device Number); <br/>
 >> Device number is INT type <br/>
@@ -24,11 +28,11 @@ NFC Communication Programs Implemented in C# (Unity Available)
 >     string result = card.cardResult;
 >     string deviceInfo = card.readerName;  // Get Device Info
 > ## 2. Read NFC Data
->     card = NFC.readCardData(Block);
+>     card = NFC.readCardData(Block, Type);
 >     string result = card.cardResult;
 >> Block is INT type <br/>
 > ## 3. Write NFC Data
->     bool result = NFC.writeCardData(Block, Value);
+>     bool result = NFC.writeCardData(Block, Value, Type);
 >> Block is INT Type <br/>
 >> Value is string Type <br/>
 
