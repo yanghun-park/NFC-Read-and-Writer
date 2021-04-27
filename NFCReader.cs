@@ -2,8 +2,8 @@
 using SmardCard;
 using System.Text;
 
-// NFC Project (2021-04-26)
-// Version : 1.10v
+// NFC Project (2021-04-27)
+// Version : 1.15v
 
 public class NFCReader
 {
@@ -37,14 +37,14 @@ public class NFCReader
         public string cardResult = "";
     }
 
-    public CardData readCardData(int block, int type)
+    public CardData readCardData(int block, bool auth)
     {
         // sendBuffer -> APDU {Class, INS, P1, P2, Le}
         byte[] sendBuffer = new byte[] {0xff, 0xb0, 0x00, (byte)block, 0x10}; // Data Acquisition APDU
         bool authCheck = false;
         int ret;
 
-        if (type == 0) // if Mifare S50 is selected
+        if (auth) // if Mifare S50 is selected
         {
             try // Attempt to authenticate
             {
@@ -56,10 +56,7 @@ public class NFCReader
             }
             catch (Exception e)
             {
-                if (ThrowExceptionLog)
-                    //Debug.LogWarning(e);
-
-                    return new CardData();
+                return new CardData();
             }
         }
 
@@ -86,7 +83,7 @@ public class NFCReader
         return new CardData { readerName = readerName, cardResult = "Error" };
     }
 
-    public bool writeCardData(int block, string value, int type)
+    public bool writeCardData(int block, string value, bool auth)
     {
         // sendBuffer -> APDU {Class, INS, P1, P2, Le}
         byte[] sendBuffer = new byte[256];
@@ -100,7 +97,7 @@ public class NFCReader
         bool authCheck = false;
         int ret;
 
-        if (type == 0) // if Mifare S50 is selected
+        if (auth)
         {
             try // Attempt to authenticate
             {
@@ -112,11 +109,7 @@ public class NFCReader
             }
             catch (Exception e)
             {
-                if (ThrowExceptionLog)
-
-                    //Debug.LogWarning(e);
-
-                    return false;
+                return false;
             }
         }
 
