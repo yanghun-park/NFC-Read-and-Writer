@@ -34,7 +34,10 @@ namespace NFC_Project
             if (card.readerName != null)
                 deviceBox1.Text = "Device 1 (" + card.readerName + ")";
             else
+            {
                 deviceBox1.Text = "Device 1 (Device Not Found)";
+                MessageBox.Show("Device 1 Not Found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void btnGetUID2_Click(object sender, EventArgs e)
@@ -48,7 +51,10 @@ namespace NFC_Project
             if (card.readerName != null)
                 deviceBox2.Text = "Device 2 (" + card.readerName + ")";
             else
+            {
                 deviceBox2.Text = "Device 2 (Device Not Found)";
+                MessageBox.Show("Device 2 Not Found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 
         }
 
@@ -64,6 +70,11 @@ namespace NFC_Project
                     lblData1.Text = "Data : " + card.cardResult;
                 if (card.readerName != "")
                     deviceBox1.Text = "Deivce 1 (" + card.readerName + ")";
+                else
+                {
+                    deviceBox1.Text = "Device 1 (Device Not Found)";
+                    MessageBox.Show("Device 1 Not Found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
             catch(Exception)
             {
@@ -83,6 +94,11 @@ namespace NFC_Project
                     lblData2.Text = "Data : " + card.cardResult;
                 if (card.readerName != "")
                     deviceBox2.Text = "Deivce 2 (" + card.readerName + ")";
+                else
+                {
+                    MessageBox.Show("Device 2 Not Found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    deviceBox2.Text = "Device 2 (Device Not Found)";
+                }
             }
             catch (Exception)
             {
@@ -94,6 +110,7 @@ namespace NFC_Project
         {
             NFCReader.CardData card = new NFCReader.CardData();
             int block = 0;
+            bool result = false;
 
             try
             {
@@ -119,18 +136,28 @@ namespace NFC_Project
                 }
             }
 
-            bool result = NFC1.writeCardData(int.Parse(txtBlock1.Text), txtInput1.Text, chkAuth1.Checked);
-
-            if (result)
-                MessageBox.Show("Write Success!", "NFC Project");
-            else
-                MessageBox.Show("Write Fail!", "NFC Project");
+            try
+            {
+                result = NFC1.writeCardData(int.Parse(txtBlock1.Text), txtInput1.Text, chkAuth1.Checked);
+            }
+            catch
+            {
+                result = false;
+            }
+            finally
+            {
+                if (result)
+                    MessageBox.Show("Write Success!", "NFC Project");
+                else
+                    MessageBox.Show("Write Fail!", "NFC Project");
+            }
         }
 
         private void btnWrite2_Click(object sender, EventArgs e)
         {
             NFCReader.CardData card = new NFCReader.CardData();
             int block = 0;
+            bool result = false;
 
             try
             {
@@ -156,12 +183,21 @@ namespace NFC_Project
                 }
             }
 
-            bool result = NFC2.writeCardData(int.Parse(txtBlock2.Text), txtInput2.Text, chkAuth2.Checked);
-
-            if (result)
-                MessageBox.Show("Write Success!", "NFC Project");
-            else
-                MessageBox.Show("Write Fail!", "NFC Project");
+            try
+            {
+                result = NFC2.writeCardData(int.Parse(txtBlock2.Text), txtInput2.Text, chkAuth2.Checked);
+            }
+            catch
+            {
+                result = false;
+            }
+            finally
+            {
+                if (result)
+                    MessageBox.Show("Write Success!", "NFC Project");
+                else
+                    MessageBox.Show("Write Fail!", "NFC Project");
+            }
         }
 
         private void txtBlock1_Click(object sender, EventArgs e)

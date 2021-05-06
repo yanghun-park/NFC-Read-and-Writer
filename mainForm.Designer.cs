@@ -315,7 +315,7 @@ namespace NFC_Project
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(152, 17);
             this.label5.TabIndex = 2;
-            this.label5.Text = "Program Version : 1.15v";
+            this.label5.Text = "Program Version : 1.16v";
             // 
             // mainForm
             // 
@@ -326,7 +326,7 @@ namespace NFC_Project
             this.Controls.Add(this.deviceBox2);
             this.Controls.Add(this.deviceBox1);
             this.Name = "mainForm";
-            this.Text = "NFC Project (1.15v)";
+            this.Text = "NFC Project (1.16v)";
             this.Load += new System.EventHandler(this.mainForm_Load);
             this.deviceBox1.ResumeLayout(false);
             this.deviceBox1.PerformLayout();
